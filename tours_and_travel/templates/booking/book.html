@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Book {{ car.name }}{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'car_list' %}" class="text-decoration-none">Cars</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'car_detail' car.pk %}" class="text-decoration-none">{{ car.name
+                    }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Book</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Car Summary Card -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="position-relative">
+                    {% if car.image %}
+                    <img src="{{ car.image }}" class="card-img-top" alt="{{ car.name }}"
+                        style="height: 250px; object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'img/placeholder-car.svg' %}" class="card-img-top" alt="{{ car.name }}"
+                        style="height: 250px; object-fit: cover;">
+                    {% endif %}
+                    {% if car.discount %}
+                    <span class="position-absolute top-0 end-0 m-3 badge bg-success fs-6">{{ car.discount }}% OFF</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title fw-bold mb-2">{{ car.name }}</h4>
+                    <p class="text-muted mb-3">{{ car.model }}</p>
+
+                    <div class="pricing-summary p-3 bg-light rounded-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Daily Rate:</span>
+                            {% if car.discount %}
+                            <div class="text-end">
+                                <span class="h5 text-success fw-bold mb-0">${{ car.discounted_price|floatformat:0
+                                    }}</span>
+                                <div class="small text-muted text-decoration-line-through">${{
+                                    car.price_per_day|floatformat:0 }}</div>
+                            </div>
+                            {% else %}
+                            <span class="h5 text-dark fw-bold mb-0">${{ car.price_per_day|floatformat:0 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="features text-muted small">
+                        <div class="mb-1">✓ Insurance included</div>
+                        <div class="mb-1">✓ 24/7 roadside assistance</div>
+                        <div class="mb-1">✓ Free cancellation up to 24h</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Form -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-4">
+                    <h3 class="mb-0 fw-bold">Complete Your Booking</h3>
+                    <p class="text-muted mb-0">Fill in the details below to reserve your vehicle</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" class="booking-form">
+                        {% csrf_token %}
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="{{ form.pickup_location.id_for_label }}" class="form-label fw-semibold">
+                                    📍 Pickup Location
+                                </label>
+                                <input type="text" class="form-control form-control-lg"
+                                    id="{{ form.pickup_location.id_for_label }}" name="{{ form.pickup_location.name }}"
+                                    placeholder="Enter pickup address or location" required>
+                                <div class="form-text">Please provide the exact address where you'd like to pick up the
+                                    vehicle</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.booking_date.id_for_label }}" class="form-label fw-semibold">
+                                    📅 Pickup Date
+                                </label>
+                                <input type="date" class="form-control form-control-lg"
+                                    id="{{ form.booking_date.id_for_label }}" name="{{ form.booking_date.name }}"
+                                    min="{% now 'Y-m-d' %}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.pickup_time.id_for_label }}" class="form-label fw-semibold">
+                                    🕐 Pickup Time
+                                </label>
+                                <input type="time" class="form-control form-control-lg"
+                                    id="{{ form.pickup_time.id_for_label }}" name="{{ form.pickup_time.name }}"
+                                    required>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
+                                <span class="fw-semibold">🎉 Confirm Booking</span>
+                            </button>
+                            <a href="{% url 'car_detail' car.pk %}" class="btn btn-outline-secondary">
+                                ← Back to Car Details
+                            </a>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                By confirming, you agree to our terms and conditions
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

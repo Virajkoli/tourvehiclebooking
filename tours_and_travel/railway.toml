@@ -1,0 +1,12 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn tours_and_travel.wsgi:application"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[environment]
+DJANGO_DEBUG = "False"
+DJANGO_SECRET_KEY = ""  # Railway will auto-generate this
+ALLOWED_HOSTS = "*"

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ car.name }} - Details{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'car_list' %}" class="text-decoration-none">Cars</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ car.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="position-relative">
+                {% if car.image %}
+                <img src="{{ car.image }}" class="img-fluid rounded-3 shadow-sm w-100" alt="{{ car.name }}"
+                    style="height: 400px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'img/placeholder-car.svg' %}" class="img-fluid rounded-3 shadow-sm w-100"
+                    alt="{{ car.name }}" style="height: 400px; object-fit: cover;">
+                {% endif %}
+                {% if car.discount %}
+                <span class="position-absolute top-0 end-0 m-3 badge bg-success fs-6">{{ car.discount }}% OFF</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="h-100 d-flex flex-column">
+                <div class="mb-4">
+                    <h1 class="display-5 fw-bold text-dark mb-3">{{ car.name }}</h1>
+                    <p class="lead text-muted mb-3">{{ car.model }}</p>
+
+                    <div class="price-section mb-4">
+                        {% if car.discount %}
+                        <div class="d-flex align-items-baseline gap-2">
+                            <span class="h2 text-success fw-bold mb-0">${{ car.discounted_price|floatformat:0 }}</span>
+                            <span class="text-muted text-decoration-line-through">${{ car.price_per_day|floatformat:0
+                                }}</span>
+                            <span class="text-muted">/ day</span>
+                        </div>
+                        {% else %}
+                        <div class="d-flex align-items-baseline gap-1">
+                            <span class="h2 text-dark fw-bold mb-0">${{ car.price_per_day|floatformat:0 }}</span>
+                            <span class="text-muted">/ day</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="availability-status mb-4">
+                        {% if car.is_available %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fs-6">
+                            ✓ Available Now
+                        </span>
+                        {% else %}
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fs-6">
+                            ✗ Not Available
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="mt-auto">
+                    {% if car.is_available %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'book_car' car.pk %}" class="btn btn-primary btn-lg px-4 py-3">
+                            📅 Book This Car
+                        </a>
+                        <a href="{% url 'car_list' %}" class="btn btn-outline-secondary">
+                            ← Back to Cars
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-secondary btn-lg px-4 py-3" disabled>
+                            ✗ Currently Unavailable
+                        </button>
+                        <a href="{% url 'car_list' %}" class="btn btn-outline-secondary">
+                            ← Back to Cars
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

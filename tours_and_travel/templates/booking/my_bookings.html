@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Bookings - Tours & Travel{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-6 fw-bold mb-2">My Bookings</h1>
+            <p class="text-muted mb-0">Track and manage your car reservations</p>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">My Bookings</li>
+            </ol>
+        </nav>
+    </div>
+
+    {% if bookings %}
+    <div class="row g-4">
+        {% for booking in bookings %}
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        {% if booking.car.image %}
+                        <img src="{{ booking.car.image }}" class="img-fluid rounded-start h-100"
+                            alt="{{ booking.car.name }}" style="object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'img/placeholder-car.svg' %}" class="img-fluid rounded-start h-100"
+                            alt="{{ booking.car.name }}" style="object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body h-100 d-flex flex-column">
+                            <div class="mb-3">
+                                <h5 class="card-title fw-bold mb-1">{{ booking.car.name }}</h5>
+                                <p class="text-muted small mb-2">{{ booking.car.model }}</p>
+
+                                <div class="booking-details">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-semibold me-2">📍</span>
+                                        <span class="small">{{ booking.pickup_location }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-semibold me-2">📅</span>
+                                        <span class="small">{{ booking.booking_date|date:"M d, Y" }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-semibold me-2">🕐</span>
+                                        <span class="small">{{ booking.pickup_time|time:"H:i" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        Booked {{ booking.created_at|timesince }} ago
+                                    </small>
+                                    <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        ✓ Confirmed
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{% url 'car_list' %}" class="btn btn-primary btn-lg px-4">
+            Book Another Car
+        </a>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="mb-4">
+            <svg width="80" height="80" fill="currentColor" class="text-muted">
+                <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="2" fill="none" />
+                <path d="M25 40h30M40 25v30" stroke="currentColor" stroke-width="2" />
+            </svg>
+        </div>
+        <h3 class="text-muted mb-3">No bookings yet</h3>
+        <p class="text-muted mb-4">Start exploring our fleet and make your first reservation!</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'car_list' %}" class="btn btn-primary btn-lg px-4">
+                Browse Cars
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                Back to Home
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
