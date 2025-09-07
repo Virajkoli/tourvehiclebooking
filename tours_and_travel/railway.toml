@@ -2,7 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn tours_and_travel.wsgi:application"
+startCommand = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn tours_and_travel.wsgi:application --port $PORT --bind 0.0.0.0:$PORT"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
