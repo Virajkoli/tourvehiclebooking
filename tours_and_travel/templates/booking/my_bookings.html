@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}My Bookings - Tours & Travel{% endblock %}
+
 {% block content %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -19,9 +21,9 @@
     {% if bookings %}
     <div class="row g-4">
         {% for booking in bookings %}
-        <div class="col-lg-6">
+        <div class="col-12">
             <div class="card border-0 shadow-sm h-100">
-                <div class="row g-0">
+                <div class="row g-0 h-100">
                     <div class="col-md-4">
                         {% if booking.car.image %}
                         <img src="{{ booking.car.image }}" class="img-fluid rounded-start h-100"
@@ -43,13 +45,34 @@
                                         <span class="small">{{ booking.pickup_location }}</span>
                                     </div>
                                     <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-semibold me-2">🎯</span>
+                                        <span class="small">{{ booking.destination }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-semibold me-2">📏</span>
+                                        <span class="small">{{ booking.distance_km }} km</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-semibold me-2">💰</span>
+                                        <span class="small fw-bold text-success">₹{{ booking.total_price|floatformat:2
+                                            }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
                                         <span class="fw-semibold me-2">📅</span>
                                         <span class="small">{{ booking.booking_date|date:"M d, Y" }}</span>
                                     </div>
                                     <div class="d-flex align-items-center mb-2">
                                         <span class="fw-semibold me-2">🕐</span>
-                                        <span class="small">{{ booking.pickup_time|time:"H:i" }}</span>
+                                        <span class="small">{{ booking.pickup_time|time:"g:i A" }}</span>
                                     </div>
+                                    {% if booking.car.assigned_driver %}
+                                    <div class="mt-3 p-2 bg-light rounded">
+                                        <div class="small fw-bold mb-1">👨‍💼 Driver Information:</div>
+                                        <div class="small text-muted">{{ booking.car.assigned_driver.name }}</div>
+                                        <div class="small text-muted">📞 {{ booking.car.assigned_driver.phone_number }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -58,9 +81,12 @@
                                     <small class="text-muted">
                                         Booked {{ booking.created_at|timesince }} ago
                                     </small>
-                                    <span class="badge bg-success-subtle text-success px-3 py-2">
-                                        ✓ Confirmed
-                                    </span>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'car_detail' booking.car.pk %}"
+                                            class="btn btn-outline-primary btn-sm">
+                                            View Car
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -72,10 +98,11 @@
     </div>
 
     <div class="text-center mt-5">
-        <a href="{% url 'car_list' %}" class="btn btn-primary btn-lg px-4">
-            Book Another Car
+        <a href="{% url 'car_list' %}" class="btn btn-primary">
+            <span class="me-2">🚗</span>Book Another Car
         </a>
     </div>
+
     {% else %}
     <div class="text-center py-5">
         <div class="mb-4">

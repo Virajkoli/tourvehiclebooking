@@ -1,0 +1,35 @@
+🚗 Booking Confirmation - Tours & Travel
+
+Dear {{ user.first_name|default:user.username }},
+
+Thank you for booking with Tours & Travel! Your booking has been confirmed.
+
+📋 Booking Details
+🚗 Vehicle: {{ booking.car.name }}{% if booking.car.model %} ({{ booking.car.model }}){% endif %}
+📍 Pickup Location: {{ booking.pickup_location }}
+🎯 Destination: {{ booking.destination }}
+📏 Distance: {{ booking.distance_km }} km
+💰 Total Price: ₹{{ booking.total_price|floatformat:2 }}
+📅 Date: {{ booking.booking_date|date:"F d, Y" }}
+🕐 Time: {{ booking.pickup_time|time:"g:i A" }}
+
+👨‍💼 Driver Information
+{% if booking.car.assigned_driver %}👤 Driver Name: {{ booking.car.assigned_driver.name }}
+📞 Phone Number: {{ booking.car.assigned_driver.phone_number }}
+📧 Email: {{ booking.car.assigned_driver.email|default:"Not available" }}
+🆔 License: {{ booking.car.assigned_driver.license_number|default:"—" }}
+⭐ Experience: {{ booking.car.assigned_driver.experience_years|default:"—" }} years
+{% else %}Driver will be assigned shortly. You will receive another email with driver details.
+{% endif %}
+
+📱 Important Notes
+• Please be ready 10 minutes before pickup time
+• Ensure your phone is reachable
+• Driver will contact you 30 minutes before pickup
+• Carry a valid ID for verification
+
+Thank you for choosing Tours & Travel!
+
+Best regards,
+Tours & Travel Team
+www.toursandtravel.com

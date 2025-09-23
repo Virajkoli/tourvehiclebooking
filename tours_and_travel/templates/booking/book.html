@@ -35,16 +35,16 @@
 
                     <div class="pricing-summary p-3 bg-light rounded-3 mb-3">
                         <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">Daily Rate:</span>
+                            <span class="text-muted">Rate per KM:</span>
                             {% if car.discount %}
                             <div class="text-end">
-                                <span class="h5 text-success fw-bold mb-0">${{ car.discounted_price|floatformat:0
-                                    }}</span>
-                                <div class="small text-muted text-decoration-line-through">${{
-                                    car.price_per_day|floatformat:0 }}</div>
+                                <span class="h5 text-success fw-bold mb-0">₹{{ car.discounted_price_per_km|floatformat:2
+                                    }}/km</span>
+                                <div class="small text-muted text-decoration-line-through">₹{{
+                                    car.price_per_km|floatformat:2 }}/km</div>
                             </div>
                             {% else %}
-                            <span class="h5 text-dark fw-bold mb-0">${{ car.price_per_day|floatformat:0 }}</span>
+                            <span class="h5 text-dark fw-bold mb-0">₹{{ car.price_per_km|floatformat:2 }}/km</span>
                             {% endif %}
                         </div>
                     </div>
@@ -82,6 +82,24 @@
                             </div>
 
                             <div class="col-md-6">
+                                <label for="{{ form.destination.id_for_label }}" class="form-label fw-semibold">
+                                    🎯 Destination
+                                </label>
+                                <input type="text" class="form-control form-control-lg"
+                                    id="{{ form.destination.id_for_label }}" name="{{ form.destination.name }}"
+                                    placeholder="Enter destination" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.distance_km.id_for_label }}" class="form-label fw-semibold">
+                                    📏 Distance (KM)
+                                </label>
+                                <input type="number" class="form-control form-control-lg"
+                                    id="{{ form.distance_km.id_for_label }}" name="{{ form.distance_km.name }}"
+                                    step="0.1" min="0.1" placeholder="Enter distance in kilometers" required>
+                            </div>
+
+                            <div class="col-md-6">
                                 <label for="{{ form.booking_date.id_for_label }}" class="form-label fw-semibold">
                                     📅 Pickup Date
                                 </label>
@@ -98,6 +116,15 @@
                                     id="{{ form.pickup_time.id_for_label }}" name="{{ form.pickup_time.name }}"
                                     required>
                             </div>
+                        </div>
+
+                        <!-- Price Calculator -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-semibold">Estimated Total:</span>
+                                <span class="fw-bold text-success h5" id="totalPrice">₹0.00</span>
+                            </div>
+                            <small class="text-muted">Price will update when you enter distance</small>
                         </div>
 
                         <hr class="my-4">
@@ -122,4 +149,22 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const distanceInput = document.getElementById('{{ form.distance_km.id_for_label }}');
+        const totalPriceElement = document.getElementById('totalPrice');
+        const pricePerKm = parseFloat('{{ car.discounted_price_per_km|stringformat:".2f" }}');
+
+        function calculateTotal() {
+            const distance = parseFloat(distanceInput.value) || 0;
+            const total = distance * pricePerKm;
+            totalPriceElement.textContent = '₹' + total.toFixed(2);
+        }
+
+        distanceInput.addEventListener('input', calculateTotal);
+        distanceInput.addEventListener('change', calculateTotal);
+    });
+</script>
+
 {% endblock %}

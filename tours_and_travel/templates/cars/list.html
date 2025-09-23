@@ -39,15 +39,16 @@
                     <div class="pricing mb-3">
                         {% if car.discount %}
                         <div class="d-flex align-items-baseline gap-2">
-                            <span class="h5 text-success fw-bold mb-0">${{ car.discounted_price|floatformat:0 }}</span>
-                            <span class="text-muted text-decoration-line-through small">${{
-                                car.price_per_day|floatformat:0 }}</span>
-                            <span class="text-muted small">/ day</span>
+                            <span class="h5 text-success fw-bold mb-0">₹{{ car.discounted_price_per_km|floatformat:0
+                                }}</span>
+                            <span class="text-muted text-decoration-line-through small">₹{{
+                                car.price_per_km|floatformat:0 }}</span>
+                            <span class="text-muted small">/ km</span>
                         </div>
                         {% else %}
                         <div class="d-flex align-items-baseline gap-1">
-                            <span class="h5 text-dark fw-bold mb-0">${{ car.price_per_day|floatformat:0 }}</span>
-                            <span class="text-muted small">/ day</span>
+                            <span class="h5 text-dark fw-bold mb-0">₹{{ car.price_per_km|floatformat:0 }}</span>
+                            <span class="text-muted small">/ km</span>
                         </div>
                         {% endif %}
                     </div>

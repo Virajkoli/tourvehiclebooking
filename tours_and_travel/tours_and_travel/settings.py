@@ -83,5 +83,13 @@ LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "login"
 
-# Use console backend for emails (password reset)
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Email Configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "jarvis.org.44@gmail.com"
+EMAIL_HOST_PASSWORD = "aqmoiukykhyrxdzq"
+
+DEFAULT_FROM_EMAIL = "Tours & Travel <noreply@toursandtravel.com>"
+ADMIN_EMAIL = "admin@toursandtravel.com"

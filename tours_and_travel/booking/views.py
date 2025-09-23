@@ -2,8 +2,39 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 from .models import Car, Announcement, Booking
 from .forms import BookingForm, RegisterForm
+
+
+def send_booking_confirmation_email(booking):
+    """Send booking confirmation email to the user"""
+    try:
+        # Render email templates
+        html_message = render_to_string('emails/booking_confirmation.html', {
+            'booking': booking,
+            'user': booking.user,
+        })
+        plain_message = render_to_string('emails/booking_confirmation.txt', {
+            'booking': booking,
+            'user': booking.user,
+        })
+        
+        # Send email
+        send_mail(
+            subject=f'🚗 Booking Confirmation - {booking.car.name}',
+            message=plain_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[booking.user.email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        return True
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return False
 
 
 def home(request):
@@ -32,7 +63,14 @@ def book_car(request, pk):
             booking.user = request.user
             booking.car = car
             booking.save()
-            messages.success(request, 'Booking confirmed!')
+            
+            # Send confirmation email
+            email_sent = send_booking_confirmation_email(booking)
+            if email_sent:
+                messages.success(request, 'Booking confirmed! Check your email for details.')
+            else:
+                messages.success(request, 'Booking confirmed! (Note: Email notification failed)')
+            
             return redirect('my_bookings')
     else:
         form = BookingForm()
